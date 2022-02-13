@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'dart:core';
 import 'dart:io';
@@ -7,33 +9,22 @@ import '../model/student.dart';
 import '../widgets/baseappbar.dart';
 import '../main.dart';
 
-class Edit extends StatefulWidget {
-  var box = Hive.box<Student>(boxName);
-  final Student obj;
-  final int index;
-  final formKey = GlobalKey<FormState>();
-
-  Edit({Key? key, required this.obj, required this.index}) : super(key: key);
+class Details extends StatefulWidget {
+  Details({Key? key}) : super(key: key);
 
   @override
-  _EditState createState() => _EditState();
+  State<Details> createState() => _DetailsState();
 }
 
-class _EditState extends State<Edit> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController ageController = TextEditingController();
-  TextEditingController classController = TextEditingController();
-  TextEditingController placeController = TextEditingController();
+class _DetailsState extends State<Details> {
+  var box = Hive.box<Student>(boxName);
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+  final TextEditingController classController = TextEditingController();
+  final TextEditingController placeController = TextEditingController();
   XFile? _image;
   dynamic _imagePath;
-
-  prefilledDetails() {
-    nameController.text = widget.obj.name;
-    ageController.text = widget.obj.age.toString();
-    classController.text = widget.obj.currentClass.toString();
-    placeController.text = widget.obj.place;
-    _imagePath = widget.obj.imagePath;
-  }
+  final formKey = GlobalKey<FormState>();
 
   Future getImage() async {
     final ImagePicker image = ImagePicker();
@@ -45,23 +36,17 @@ class _EditState extends State<Edit> {
   }
 
   @override
-  void initState() {
-    prefilledDetails();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue[50],
       appBar: BaseAppBar(
-        leadingback: true,
         centerTitle: true,
-        title: const Text("Edit"),
+        title: const Text("Create"),
       ),
       body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
         child: Form(
-          key: widget.formKey,
+          key: formKey,
           child: Column(
             children: [
               SizedBox(
@@ -69,7 +54,7 @@ class _EditState extends State<Edit> {
               ),
               Stack(
                 children: [
-                  _imagePath == null
+                  _image == null
                       ? CircleAvatar(
                           radius: 75,
                           backgroundColor: Colors.blue[200],
@@ -107,8 +92,18 @@ class _EditState extends State<Edit> {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 80 / 100,
                 child: TextFieldCustom(
-                  labelText: 'Name',
+                  validator: (value){
+                     if(value == null||value.isEmpty) {
+                       return "please enter some text";
+                     }else {
+                       if(RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)){
+                         return "please enter a valid name";
+                       }
+                       return null;
+                     }
+                     },
                   controller: nameController,
+                  labelText: 'Name',
                 ),
               ),
               SizedBox(
@@ -122,8 +117,20 @@ class _EditState extends State<Edit> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 35 / 100,
                     child: TextFieldCustom(
-                      labelText: 'Age',
+                      // validator: (value){
+                      //   if(value==null||value.isEmpty){
+                      //     return "field is empty";
+                      //   }else{
+                      //     if(RegExp(r'^[0-9]*$').hasMatch(value)){
+                      //       return "only numbers";
+                      //     }
+                      //     else{
+                      //       return null;
+                      //     }
+                      //   }
+                      // },
                       controller: ageController,
+                      labelText: 'Age',
                     ),
                   ),
                   SizedBox(
@@ -132,8 +139,8 @@ class _EditState extends State<Edit> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 35 / 100,
                     child: TextFieldCustom(
-                      labelText: 'Class',
                       controller: classController,
+                      labelText: 'Class',
                     ),
                   ),
                 ],
@@ -144,8 +151,13 @@ class _EditState extends State<Edit> {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 80 / 100,
                 child: TextFieldCustom(
-                  labelText: 'Place',
+                  validator: (value){
+                    if(value==null || value.isEmpty){
+                      return "please enter some text";
+                    }return null;
+                  },
                   controller: placeController,
+                  labelText: 'Place',
                 ),
               ),
               SizedBox(
@@ -160,15 +172,18 @@ class _EditState extends State<Edit> {
                     width: MediaQuery.of(context).size.width * .35,
                     child: ElevatedButton(
                       onPressed: () {
-                        widget.box.putAt(
-                            widget.index,
-                            Student(
-                                name: nameController.text,
-                                age: int.parse(ageController.text),
-                                currentClass: int.parse(classController.text),
-                                place: placeController.text,
-                                imagePath: _imagePath));
-                        Navigator.pop(context);
+                        if(formKey.currentState!.validate()) {
+                          box.add(Student(
+                              name: nameController.text,
+                              age: int.parse(ageController.text),
+                              currentClass: int.parse(classController.text),
+                              place: placeController.text,
+                              imagePath: _imagePath));
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Student Added Successfully")));
+                        }
                       },
                       child: const Text(
                         "Save",
@@ -186,25 +201,10 @@ class _EditState extends State<Edit> {
                     width: MediaQuery.of(context).size.width * .35,
                     child: ElevatedButton(
                         onPressed: () {
-                          showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(
-                              title: Text("Delete"),
-                              content: Text("Do you want to delete it?"),
-                              actions: [
-                                TextButton(onPressed: (){
-                                  Navigator.pop(context);
-                                }, child: Text("No")),
-                                TextButton(onPressed: (){
-                                  widget.obj.delete();
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                }, child: Text("Yes"))
-                              ],
-                            );
-                          });
+                          Navigator.pop(context);
                         },
                         child: const Text(
-                          "Delete",
+                          "Back",
                           style: TextStyle(color: Colors.purple, fontSize: 16),
                         )),
                   )
