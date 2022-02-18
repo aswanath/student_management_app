@@ -5,19 +5,19 @@ part 'student.g.dart';
 @HiveType(typeId: 0)
 class Student extends HiveObject{
   @HiveField(0)
-  final String name;
+   String name;
 
   @HiveField(1)
-  final int age;
+   int age;
 
   @HiveField(2)
-  final int currentClass;
+  int currentClass;
 
   @HiveField(3)
-  final String place;
+   String place;
 
   @HiveField(4)
-  final dynamic imagePath;
+   dynamic imagePath;
 
   Student({required this.name, required this.age,required this.currentClass, required this.place,required this.imagePath, });
 }

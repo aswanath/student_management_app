@@ -94,7 +94,7 @@ class _DetailsState extends State<Details> {
                 child: TextFieldCustom(
                   validator: (value){
                      if(value == null||value.isEmpty) {
-                       return "please enter some text";
+                       return "please enter name";
                      }else {
                        if(RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)){
                          return "please enter a valid name";
@@ -117,18 +117,19 @@ class _DetailsState extends State<Details> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 35 / 100,
                     child: TextFieldCustom(
-                      // validator: (value){
-                      //   if(value==null||value.isEmpty){
-                      //     return "field is empty";
-                      //   }else{
-                      //     if(RegExp(r'^[0-9]*$').hasMatch(value)){
-                      //       return "only numbers";
-                      //     }
-                      //     else{
-                      //       return null;
-                      //     }
-                      //   }
-                      // },
+                      keyboard: TextInputType.number,
+                      validator: (value){
+                        if(value==null || value.isEmpty){
+                          return "please enter age";
+                        }else{
+                          if(RegExp(r'^[0-9]*$').hasMatch(value)&&int.parse(value)<150){
+                            return null;
+                          }
+                          else{
+                            return "invalid input";
+                          }
+                        }
+                      },
                       controller: ageController,
                       labelText: 'Age',
                     ),
@@ -139,6 +140,19 @@ class _DetailsState extends State<Details> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 35 / 100,
                     child: TextFieldCustom(
+                      keyboard: TextInputType.number,
+                      validator: (value){
+                        if(value==null || value.isEmpty){
+                          return "please enter class";
+                        }else{
+                          if(RegExp(r'^[0-9]*$').hasMatch(value)&&value.length<3){
+                            return null;
+                          }
+                          else{
+                            return "invalid input";
+                          }
+                        }
+                      },
                       controller: classController,
                       labelText: 'Class',
                     ),
@@ -153,7 +167,7 @@ class _DetailsState extends State<Details> {
                 child: TextFieldCustom(
                   validator: (value){
                     if(value==null || value.isEmpty){
-                      return "please enter some text";
+                      return "please enter place";
                     }return null;
                   },
                   controller: placeController,

@@ -18,6 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Icon cusIcon = Icon(Icons.search);
   Widget cusSearchBar = Text("Student Management");
+  String searchtext = "";
 
   @override
   Widget build(BuildContext context) {
@@ -31,21 +32,26 @@ class _HomePageState extends State<HomePage> {
                 setState(() {
                   if (cusIcon.icon == Icons.search) {
                     cusIcon = const Icon(Icons.close);
-                    cusSearchBar = const TextField(
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.tealAccent)
-                        ),
+                    cusSearchBar = TextField(
+                      onChanged: (value) {
+                        searchtext = value;
+                        setState(() {});
+                      },
+                      decoration: const InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.tealAccent)),
                           focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.tealAccent)
-                          ),
+                              borderSide: BorderSide(color: Colors.tealAccent)),
                           hintText: "Search",
                           hintStyle: TextStyle(
                             color: Colors.tealAccent,
                           )),
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                      style: const TextStyle(color: Colors.white, fontSize: 20),
                     );
                   } else {
+                    setState(() {
+                      searchtext = "";
+                    });
                     cusIcon = const Icon(Icons.search);
                     cusSearchBar = const Text("Student Management");
                   }
@@ -57,16 +63,20 @@ class _HomePageState extends State<HomePage> {
       ),
       body: ValueListenableBuilder(
         valueListenable: Hive.box<Student>(boxName).listenable(),
-        builder: (context, Box<Student> newbox, _){
+        builder: (context, Box<Student> newbox, _) {
           List key = newbox.keys.toList();
           if (key.isEmpty) {
             return const Center(
               child: Text("The Student List is Empty"),
             );
           } else {
+            List<Student>  data = newbox.values
+                .toList()
+                .where((element) => element.name
+                    .toLowerCase()
+                    .contains(searchtext.toLowerCase())).toList();
             return ListView.separated(
                 itemBuilder: (context, index) {
-                  Student? data = newbox.getAt(index);
                   return Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
@@ -80,10 +90,10 @@ class _HomePageState extends State<HomePage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => AllDetails(
-                                      obj: data!,
+                                      obj: data, index: index,
                                     )));
                       },
-                      leading: data?.imagePath == null
+                      leading: data[index].imagePath == null
                           ? CircleAvatar(
                               backgroundColor: Colors.blue[200],
                               child: const Text(
@@ -95,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                           : CircleAvatar(
                               child: ClipOval(
                                   child: Image.file(
-                              File(data!.imagePath),
+                              File(data[index].imagePath),
                               width: 50,
                               height: 50,
                               fit: BoxFit.cover,
@@ -109,36 +119,48 @@ class _HomePageState extends State<HomePage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => Edit(
-                                            obj: data!,
+                                            obj: data,
                                             index: index,
+                                        searchText: searchtext,
                                           )));
                             },
                             child: const Icon(Icons.edit),
                           ),
                           TextButton(
                             onPressed: () {
-                              showDialog(context: context, builder: (BuildContext context){
-                               return AlertDialog(
-                                  title: Text("Delete"),
-                                  content: Text("Do you want to delete it?"),
-                                  actions: [
-                                    TextButton(onPressed: (){
-                                      Navigator.pop(context);
-                                    }, child: Text("No")),
-                                    TextButton(onPressed: (){
-                                      data!.delete();
-                                      Navigator.pop(context);
-                                    }, child: Text("Yes"))
-                                  ],
-                                );
-                              });
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text("Delete"),
+                                      content:
+                                          Text("Do you want to delete it?"),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("No")),
+                                        TextButton(
+                                            onPressed: () {
+                                              data[index].delete();
+                                              Navigator.pop(context);
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(const SnackBar(
+                                                      content: Text(
+                                                          "Student deleted Successfully")));
+                                            },
+                                            child: Text("Yes"))
+                                      ],
+                                    );
+                                  });
                             },
                             child: const Icon(Icons.delete),
                           ),
                         ],
                       ),
                       title: Text(
-                        data!.name,
+                        data[index].name,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -149,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.blue[50],
                   );
                 },
-                itemCount: key.length);
+                itemCount: data.length);
           }
         },
       ),

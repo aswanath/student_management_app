@@ -9,11 +9,10 @@ import '../main.dart';
 
 class Edit extends StatefulWidget {
   var box = Hive.box<Student>(boxName);
-  final Student obj;
+  final List<Student> obj;
   final int index;
-  final formKey = GlobalKey<FormState>();
-
-  Edit({Key? key, required this.obj, required this.index}) : super(key: key);
+  final String searchText;
+  Edit({Key? key, required this.obj, required this.index, required this.searchText,}) : super(key: key);
 
   @override
   _EditState createState() => _EditState();
@@ -26,13 +25,28 @@ class _EditState extends State<Edit> {
   TextEditingController placeController = TextEditingController();
   XFile? _image;
   dynamic _imagePath;
+  final formKey = GlobalKey<FormState>();
+  int? newindex;
+  int? newkey;
+  int? accesskey;
 
   prefilledDetails() {
-    nameController.text = widget.obj.name;
-    ageController.text = widget.obj.age.toString();
-    classController.text = widget.obj.currentClass.toString();
-    placeController.text = widget.obj.place;
-    _imagePath = widget.obj.imagePath;
+    nameController.text = widget.obj[widget.index].name;
+    ageController.text = widget.obj[widget.index].age.toString();
+    classController.text = widget.obj[widget.index].currentClass.toString();
+    placeController.text = widget.obj[widget.index].place;
+    _imagePath = widget.obj[widget.index].imagePath;
+    newkey = widget.obj[widget.index].key;
+    List<Student> hello = widget.box.values.toList();
+    List<Student> newdata = widget.box.values.toList().where((element) => element.key.toString().contains(newkey.toString())).toList();
+    int editkey = newdata[0].key;
+    for(int i=0;i<hello.length;i++){
+      if(hello[i].key==editkey){
+        accesskey = i;
+        break;
+      }
+    }
+
   }
 
   Future getImage() async {
@@ -61,7 +75,7 @@ class _EditState extends State<Edit> {
       ),
       body: SingleChildScrollView(
         child: Form(
-          key: widget.formKey,
+          key: formKey,
           child: Column(
             children: [
               SizedBox(
@@ -107,6 +121,19 @@ class _EditState extends State<Edit> {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 80 / 100,
                 child: TextFieldCustom(
+                  onChanged: (value) {
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "please enter name";
+                    } else {
+                      if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]')
+                          .hasMatch(value)) {
+                        return "please enter a valid name";
+                      }
+                      return null;
+                    }
+                  },
                   labelText: 'Name',
                   controller: nameController,
                 ),
@@ -122,6 +149,21 @@ class _EditState extends State<Edit> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 35 / 100,
                     child: TextFieldCustom(
+                      keyboard: TextInputType.number,
+                      onChanged: (value) {
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "please enter age";
+                        } else {
+                          if (RegExp(r'^[0-9]*$').hasMatch(value) &&
+                              int.parse(value) < 150) {
+                            return null;
+                          } else {
+                            return "invalid input";
+                          }
+                        }
+                      },
                       labelText: 'Age',
                       controller: ageController,
                     ),
@@ -132,6 +174,21 @@ class _EditState extends State<Edit> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 35 / 100,
                     child: TextFieldCustom(
+                      keyboard: TextInputType.number,
+                      onChanged: (value) {
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "please enter class";
+                        } else {
+                          if (RegExp(r'^[0-9]*$').hasMatch(value) &&
+                              value.length < 3) {
+                            return null;
+                          } else {
+                            return "invalid input";
+                          }
+                        }
+                      },
                       labelText: 'Class',
                       controller: classController,
                     ),
@@ -144,6 +201,14 @@ class _EditState extends State<Edit> {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 80 / 100,
                 child: TextFieldCustom(
+                  onChanged: (value) {
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "please enter place";
+                    }
+                    return null;
+                  },
                   labelText: 'Place',
                   controller: placeController,
                 ),
@@ -160,15 +225,21 @@ class _EditState extends State<Edit> {
                     width: MediaQuery.of(context).size.width * .35,
                     child: ElevatedButton(
                       onPressed: () {
-                        widget.box.putAt(
-                            widget.index,
-                            Student(
-                                name: nameController.text,
-                                age: int.parse(ageController.text),
-                                currentClass: int.parse(classController.text),
-                                place: placeController.text,
-                                imagePath: _imagePath));
-                        Navigator.pop(context);
+                        if (formKey.currentState!.validate()) {
+                            widget.box.putAt(
+                                accesskey!,
+                                Student(
+                                    name: nameController.text,
+                                    age: int.parse(ageController.text),
+                                    currentClass: int.parse(classController.text),
+                                    place: placeController.text,
+                                    imagePath: _imagePath));
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content:
+                                      Text("Student edited Successfully")));
+                        }
                       },
                       child: const Text(
                         "Save",
@@ -186,22 +257,32 @@ class _EditState extends State<Edit> {
                     width: MediaQuery.of(context).size.width * .35,
                     child: ElevatedButton(
                         onPressed: () {
-                          showDialog(context: context, builder: (BuildContext context){
-                            return AlertDialog(
-                              title: Text("Delete"),
-                              content: Text("Do you want to delete it?"),
-                              actions: [
-                                TextButton(onPressed: (){
-                                  Navigator.pop(context);
-                                }, child: Text("No")),
-                                TextButton(onPressed: (){
-                                  widget.obj.delete();
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                }, child: Text("Yes"))
-                              ],
-                            );
-                          });
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Delete"),
+                                  content: Text("Do you want to delete it?"),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("No")),
+                                    TextButton(
+                                        onPressed: () {
+                                          widget.obj[widget.index].delete();
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                                  content: Text(
+                                                      "Student deleted Successfully")));
+                                        },
+                                        child: Text("Yes"))
+                                  ],
+                                );
+                              });
                         },
                         child: const Text(
                           "Delete",

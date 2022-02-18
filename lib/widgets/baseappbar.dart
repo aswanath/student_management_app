@@ -37,13 +37,16 @@ class TextFieldCustom extends StatelessWidget {
   TextEditingController? controller;
   String? initialvalue;
   FormFieldValidator<String>? validator;
+  void Function(String)? onChanged;
+  TextInputType? keyboard;
 
-
-  TextFieldCustom({Key? key, required this.labelText,  this.controller, this.initialvalue, this.validator}) : super(key: key);
+  TextFieldCustom({Key? key, required this.labelText,this.keyboard,  this.controller, this.initialvalue, this.validator,this.onChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: keyboard??TextInputType.text,
+      onChanged: onChanged,
       validator: validator,
       initialValue: initialvalue,
       decoration: InputDecoration(

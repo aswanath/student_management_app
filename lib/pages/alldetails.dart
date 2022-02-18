@@ -8,9 +8,10 @@ import 'package:student_management/widgets/baseappbar.dart';
 
 class AllDetails extends StatelessWidget {
   var box = Hive.box<Student>(boxName);
-  final Student obj;
+  final List<Student> obj;
+  final int index;
 
-  AllDetails({Key? key, required this.obj}) : super(key: key);
+  AllDetails({Key? key, required this.obj, required this.index}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,12 +29,12 @@ class AllDetails extends StatelessWidget {
             CircleAvatar(
               radius: 75,
               backgroundColor: Colors.blue[200],
-              child: obj.imagePath == null
+              child: obj[index].imagePath == null
                   ? const Text("No Image",
                       style: TextStyle(fontSize: 25, color: Colors.purple))
                   : ClipOval(
                       child: Image.file(
-                      File(obj.imagePath),
+                      File(obj[index].imagePath),
                       width: 150,
                       height: 150,
                       fit: BoxFit.cover,
@@ -43,23 +44,23 @@ class AllDetails extends StatelessWidget {
               height: 20,
             ),
             Text(
-              obj.name,
+              obj[index].name,
               style: const TextStyle(fontSize: 35, color: Colors.purple),
             ),
             const SizedBox(
               height: 20,
             ),
-            Text("place : ${obj.place}",
+            Text("place : ${obj[index].place}",
                 style: const TextStyle(fontSize: 22, color: Colors.purple)),
             const SizedBox(
               height: 10,
             ),
-            Text("age : ${obj.age}",
+            Text("age : ${obj[index].age}",
                 style: const TextStyle(fontSize: 22, color: Colors.purple)),
             const SizedBox(
               height: 10,
             ),
-            Text("class : ${obj.currentClass}",
+            Text("class : ${obj[index].currentClass}",
                 style: const TextStyle(fontSize: 22, color: Colors.purple)),
           ],
         ),
