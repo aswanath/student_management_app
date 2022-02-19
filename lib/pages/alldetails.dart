@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:student_management/pages/image_view.dart';
 import '../model/student.dart';
 import '../main.dart';
 import 'dart:io';
@@ -28,40 +29,65 @@ class AllDetails extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 75,
-              backgroundColor: Colors.blue[200],
+              backgroundColor: Colors.grey,
               child: obj[index].imagePath == null
                   ? const Text("No Image",
-                      style: TextStyle(fontSize: 25, color: Colors.purple))
-                  : ClipOval(
-                      child: Image.file(
-                      File(obj[index].imagePath),
-                      width: 150,
-                      height: 150,
-                      fit: BoxFit.cover,
-                    )),
+                      style: TextStyle(fontSize: 25, color: Colors.tealAccent))
+                  : GestureDetector(
+                onTap: (){
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context)=> ViewImage(imagepath: obj[index].imagePath,)));
+                },
+                    child: ClipOval(
+                        child: Image.file(
+                        File(obj[index].imagePath),
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      )),
+                  ),
             ),
             const SizedBox(
               height: 20,
             ),
             Text(
               obj[index].name,
-              style: const TextStyle(fontSize: 35, color: Colors.purple),
+              style: const TextStyle(fontSize: 35, color: Colors.deepOrangeAccent),
             ),
             const SizedBox(
               height: 20,
             ),
-            Text("place : ${obj[index].place}",
-                style: const TextStyle(fontSize: 22, color: Colors.purple)),
-            const SizedBox(
-              height: 10,
-            ),
-            Text("age : ${obj[index].age}",
-                style: const TextStyle(fontSize: 22, color: Colors.purple)),
-            const SizedBox(
-              height: 10,
-            ),
-            Text("class : ${obj[index].currentClass}",
-                style: const TextStyle(fontSize: 22, color: Colors.purple)),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(width: 10,),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text("Class : ",style: TextStyle(color: Colors.grey,fontSize: 16),),
+                    SizedBox(height: 12,),
+                    Text("Age    : ",style: TextStyle(color: Colors.grey,fontSize: 16),),
+                    SizedBox(height: 12,),
+                    Text("Place : ",style: TextStyle(color: Colors.grey,fontSize: 16),),
+                  ],
+                ),
+                SizedBox(width: 10,),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(obj[index].currentClass.toString(),
+                               style: const TextStyle(fontSize: 22, color: Colors.purple)),
+                    SizedBox(height: 3,),
+                    Text(obj[index].age.toString(),
+                            style: const TextStyle(fontSize: 22, color: Colors.purple)),
+                    SizedBox(height: 3,),
+                    Text(obj[index].place,
+                               style: const TextStyle(fontSize: 22, color: Colors.purple)),
+                  ],
+                )
+              ],
+            )
           ],
         ),
       ),

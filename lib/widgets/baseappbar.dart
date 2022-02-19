@@ -22,7 +22,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: title,
       centerTitle: centerTitle,
       titleTextStyle: TextStyle(color: Colors.tealAccent, fontSize: 20),
-      backgroundColor: Colors.blueAccent,
+      backgroundColor: Colors.purpleAccent,
       actions: actions,
       iconTheme: IconThemeData(color: Colors.tealAccent),
     );

@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'dart:core';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:student_management/pages/image_view.dart';
 import '../model/student.dart';
 import '../widgets/baseappbar.dart';
 import '../main.dart';
@@ -53,6 +54,7 @@ class _EditState extends State<Edit> {
     final ImagePicker image = ImagePicker();
     _image = await image.pickImage(source: ImageSource.gallery);
     if (_image != null) {
+      setState(() {});
       _imagePath = _image!.path;
     }
     return null;
@@ -84,26 +86,32 @@ class _EditState extends State<Edit> {
               Stack(
                 children: [
                   _imagePath == null
-                      ? CircleAvatar(
+                      ? const CircleAvatar(
                           radius: 75,
-                          backgroundColor: Colors.blue[200],
-                          child: const Text(
-                            "No Image Selected",
-                            style: TextStyle(color: Colors.purple),
+                          backgroundColor: Colors.grey,
+                          child: Text(
+                            "Add Image",
+                            style: TextStyle(color: Colors.tealAccent),
                           ),
                         )
-                      : ClipOval(
-                          child: Image.file(
-                          File(_imagePath),
-                          width: 150,
-                          height: 150,
-                          fit: BoxFit.cover,
-                        )),
+                      : GestureDetector(
+                    onTap: (){
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context)=> ViewImage(imagepath: _imagePath)));
+                    },
+                        child: ClipOval(
+                            child: Image.file(
+                            File(_imagePath),
+                            width: 150,
+                            height: 150,
+                            fit: BoxFit.cover,
+                          )),
+                      ),
                   Positioned(
                     bottom: 0,
                     right: 0,
                     child: CircleAvatar(
-                      backgroundColor: Colors.purple,
+                      backgroundColor: Colors.purpleAccent,
                       child: IconButton(
                         icon: const Icon(
                           Icons.edit,
@@ -224,6 +232,9 @@ class _EditState extends State<Edit> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * .35,
                     child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.purpleAccent
+                      ),
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
                             widget.box.putAt(
@@ -245,7 +256,7 @@ class _EditState extends State<Edit> {
                         "Save",
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.purple,
+                          color: Colors.tealAccent,
                         ),
                       ),
                     ),
@@ -256,6 +267,9 @@ class _EditState extends State<Edit> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * .35,
                     child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.purpleAccent
+                        ),
                         onPressed: () {
                           showDialog(
                               context: context,
@@ -286,7 +300,7 @@ class _EditState extends State<Edit> {
                         },
                         child: const Text(
                           "Delete",
-                          style: TextStyle(color: Colors.purple, fontSize: 16),
+                          style: TextStyle(color: Colors.tealAccent, fontSize: 16),
                         )),
                   )
                 ],

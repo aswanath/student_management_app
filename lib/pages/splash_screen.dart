@@ -18,14 +18,20 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return  Scaffold(
       backgroundColor: Colors.purpleAccent,
       body: Center(
-        child: SizedBox(
-          child: Image(
-            width: 150,
-            image: AssetImage("assets/icon_image.png"),
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              child: Image(
+                width: 150,
+                image: AssetImage("assets/icon_image.png"),
+              ),
+            ),
+            Text("Student Management",style: TextStyle(fontWeight: FontWeight.w700,color: Colors.tealAccent,fontSize: 18),),
+          ],
         ),
       ),
     );

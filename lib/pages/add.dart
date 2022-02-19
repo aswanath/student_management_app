@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'dart:core';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:student_management/pages/image_view.dart';
 import '../model/student.dart';
 import '../widgets/baseappbar.dart';
 import '../main.dart';
@@ -30,6 +31,8 @@ class _DetailsState extends State<Details> {
     final ImagePicker image = ImagePicker();
     _image = await image.pickImage(source: ImageSource.gallery);
     if (_image != null) {
+      setState(() {
+      });
       _imagePath = _image!.path;
     }
     return null;
@@ -57,24 +60,29 @@ class _DetailsState extends State<Details> {
                   _image == null
                       ? CircleAvatar(
                           radius: 75,
-                          backgroundColor: Colors.blue[200],
+                          backgroundColor: Colors.grey,
                           child: const Text(
-                            "No Image Selected",
-                            style: TextStyle(color: Colors.purple),
+                            "Add Image",
+                            style: TextStyle(color: Colors.tealAccent),
                           ),
                         )
-                      : ClipOval(
-                          child: Image.file(
-                          File(_imagePath),
-                          width: 150,
-                          height: 150,
-                          fit: BoxFit.cover,
-                        )),
+                      : GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> ViewImage(imagepath: _imagePath)));
+                    },
+                        child: ClipOval(
+                            child: Image.file(
+                            File(_imagePath),
+                            width: 150,
+                            height: 150,
+                            fit: BoxFit.cover,
+                          )),
+                      ),
                   Positioned(
                     bottom: 0,
                     right: 0,
                     child: CircleAvatar(
-                      backgroundColor: Colors.purple,
+                      backgroundColor: Colors.blue,
                       child: IconButton(
                         icon: const Icon(
                           Icons.edit,
@@ -185,6 +193,9 @@ class _DetailsState extends State<Details> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * .35,
                     child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.purpleAccent
+                      ),
                       onPressed: () {
                         if(formKey.currentState!.validate()) {
                           box.add(Student(
@@ -203,7 +214,7 @@ class _DetailsState extends State<Details> {
                         "Save",
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.purple,
+                          color: Colors.tealAccent,
                         ),
                       ),
                     ),
@@ -214,12 +225,15 @@ class _DetailsState extends State<Details> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * .35,
                     child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            primary: Colors.purpleAccent
+                        ),
                         onPressed: () {
                           Navigator.pop(context);
                         },
                         child: const Text(
                           "Back",
-                          style: TextStyle(color: Colors.purple, fontSize: 16),
+                          style: TextStyle(color: Colors.tealAccent, fontSize: 16),
                         )),
                   )
                 ],
