@@ -9,7 +9,7 @@ void main() async{
     await Hive.initFlutter();
     Hive.registerAdapter(StudentAdapter());
     await Hive.openBox<Student>(boxName);
-    runApp(StudentManagement());
+    runApp(const StudentManagement());
 }
 
 class StudentManagement extends StatelessWidget {

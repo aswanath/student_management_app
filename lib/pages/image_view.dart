@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 class ViewImage extends StatelessWidget {
-  String imagepath;
-   ViewImage({Key? key,required this.imagepath}) : super(key: key);
+  final String imagepath;
+   const ViewImage({Key? key,required this.imagepath}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class ViewImage extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       floatingActionButton: IconButton(onPressed: (){
         Navigator.pop(context);
-      }, icon: Icon(Icons.close,size: 35,color: Colors.black,),padding: EdgeInsets.fromLTRB(10, 20, 0, 0),),
+      }, icon: const Icon(Icons.close,size: 35,color: Colors.black,),padding: const EdgeInsets.fromLTRB(10, 20, 0, 0),),
       body: Center(
         child: SizedBox(
           width: MediaQuery.of(context).size.width,

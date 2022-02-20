@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:core';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
-  Widget? title;
+  final Widget? title;
   bool centerTitle = false;
   List<Widget>? actions;
   bool leadingback=false;
@@ -21,10 +21,10 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: leadingback,
       title: title,
       centerTitle: centerTitle,
-      titleTextStyle: TextStyle(color: Colors.tealAccent, fontSize: 20),
+      titleTextStyle: const TextStyle(color: Colors.tealAccent, fontSize: 20),
       backgroundColor: Colors.purpleAccent,
       actions: actions,
-      iconTheme: IconThemeData(color: Colors.tealAccent),
+      iconTheme:const  IconThemeData(color: Colors.tealAccent),
     );
   }
 

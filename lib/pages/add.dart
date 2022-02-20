@@ -11,7 +11,7 @@ import '../widgets/baseappbar.dart';
 import '../main.dart';
 
 class Details extends StatefulWidget {
-  Details({Key? key}) : super(key: key);
+  const Details({Key? key}) : super(key: key);
 
   @override
   State<Details> createState() => _DetailsState();
@@ -58,10 +58,10 @@ class _DetailsState extends State<Details> {
               Stack(
                 children: [
                   _image == null
-                      ? CircleAvatar(
+                      ? const  CircleAvatar(
                           radius: 75,
                           backgroundColor: Colors.grey,
-                          child: const Text(
+                          child:  Text(
                             "Add Image",
                             style: TextStyle(color: Colors.tealAccent),
                           ),

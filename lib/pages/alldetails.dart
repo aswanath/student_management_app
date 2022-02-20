@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:student_management/widgets/baseappbar.dart';
 
 class AllDetails extends StatelessWidget {
-  var box = Hive.box<Student>(boxName);
+  final  box = Hive.box<Student>(boxName);
   final List<Student> obj;
   final int index;
 
@@ -61,7 +61,7 @@ class AllDetails extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(width: 10,),
+                const  SizedBox(width: 10,),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
@@ -72,16 +72,16 @@ class AllDetails extends StatelessWidget {
                     Text("Place : ",style: TextStyle(color: Colors.grey,fontSize: 16),),
                   ],
                 ),
-                SizedBox(width: 10,),
+                const SizedBox(width: 10,),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(obj[index].currentClass.toString(),
                                style: const TextStyle(fontSize: 22, color: Colors.purple)),
-                    SizedBox(height: 3,),
+                    const  SizedBox(height: 3,),
                     Text(obj[index].age.toString(),
                             style: const TextStyle(fontSize: 22, color: Colors.purple)),
-                    SizedBox(height: 3,),
+                    const  SizedBox(height: 3,),
                     Text(obj[index].place,
                                style: const TextStyle(fontSize: 22, color: Colors.purple)),
                   ],

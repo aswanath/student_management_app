@@ -10,15 +10,15 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:io';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  Icon cusIcon = Icon(Icons.search);
-  Widget cusSearchBar = Text("Student Management");
+  Icon cusIcon = const Icon(Icons.search);
+  Widget cusSearchBar = const Text("Student Management");
   String searchtext = "";
 
   @override
@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                                       )));
                         },
                         leading: data[index].imagePath == null
-                            ? CircleAvatar(
+                            ? const CircleAvatar(
                                 backgroundColor: Colors.grey,
                                 child: const Text(
                                   "No Image",
@@ -128,7 +128,6 @@ class _HomePageState extends State<HomePage> {
                                         builder: (context) => Edit(
                                               obj: data,
                                               index: index,
-                                          searchText: searchtext,
                                             )));
                               },
                               child: const Icon(Icons.edit),
@@ -139,15 +138,15 @@ class _HomePageState extends State<HomePage> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Text("Delete"),
+                                        title: const Text("Delete"),
                                         content:
-                                            Text("Do you want to delete it?"),
+                                        const  Text("Do you want to delete it?"),
                                         actions: [
                                           TextButton(
                                               onPressed: () {
                                                 Navigator.pop(context);
                                               },
-                                              child: Text("No")),
+                                              child: const Text("No")),
                                           TextButton(
                                               onPressed: () {
                                                 data[index].delete();
@@ -157,7 +156,7 @@ class _HomePageState extends State<HomePage> {
                                                         content: Text(
                                                             "Student deleted Successfully")));
                                               },
-                                              child: Text("Yes"))
+                                              child:const  Text("Yes"))
                                         ],
                                       );
                                     });
@@ -187,7 +186,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.purpleAccent,
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Details()));
+              context, MaterialPageRoute(builder: (context) =>const  Details()));
         },
         child: const Text(
           "Add",

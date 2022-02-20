@@ -12,8 +12,7 @@ class Edit extends StatefulWidget {
   var box = Hive.box<Student>(boxName);
   final List<Student> obj;
   final int index;
-  final String searchText;
-  Edit({Key? key, required this.obj, required this.index, required this.searchText,}) : super(key: key);
+  Edit({Key? key, required this.obj, required this.index,}) : super(key: key);
 
   @override
   _EditState createState() => _EditState();
@@ -39,10 +38,8 @@ class _EditState extends State<Edit> {
     _imagePath = widget.obj[widget.index].imagePath;
     newkey = widget.obj[widget.index].key;
     List<Student> hello = widget.box.values.toList();
-    List<Student> newdata = widget.box.values.toList().where((element) => element.key.toString().contains(newkey.toString())).toList();
-    int editkey = newdata[0].key;
     for(int i=0;i<hello.length;i++){
-      if(hello[i].key==editkey){
+      if(hello[i].key==newkey){
         accesskey = i;
         break;
       }
@@ -275,14 +272,14 @@ class _EditState extends State<Edit> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text("Delete"),
-                                  content: Text("Do you want to delete it?"),
+                                  title: const Text("Delete"),
+                                  content: const Text("Do you want to delete it?"),
                                   actions: [
                                     TextButton(
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
-                                        child: Text("No")),
+                                        child: const Text("No")),
                                     TextButton(
                                         onPressed: () {
                                           widget.obj[widget.index].delete();
@@ -293,7 +290,7 @@ class _EditState extends State<Edit> {
                                                   content: Text(
                                                       "Student deleted Successfully")));
                                         },
-                                        child: Text("Yes"))
+                                        child:const  Text("Yes"))
                                   ],
                                 );
                               });
