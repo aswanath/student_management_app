@@ -188,10 +188,7 @@ class _HomePageState extends State<HomePage> {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) =>const  Details()));
         },
-        child: const Text(
-          "Add",
-          style: TextStyle(color: Colors.tealAccent),
-        ),
+        child: const Icon(Icons.add,color: Colors.tealAccent,)
       ),
     );
   }
